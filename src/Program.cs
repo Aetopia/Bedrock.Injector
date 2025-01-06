@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using Bedrock.Injector;
-using Minecraft.Bedrock;
 
 static class Program
 {

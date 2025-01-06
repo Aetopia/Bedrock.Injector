@@ -92,6 +92,7 @@ sealed class Form : System.Windows.Forms.Form
             foreach (ListViewItem item in listView.Items) await writer.WriteLineAsync(item.Name);
 
         };
+
         Load += async (_, _) =>
         {
             try
