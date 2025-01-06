@@ -57,6 +57,9 @@ The thing is that it can be greatly improved & made much more reliable:
 
         - Once it is deleted, the game has reached the title screen & is fully initialized.
 
+> [!TIP]
+> Enabling debug mode is highly recommended since it prevents PLM from affecting Minecraft: Bedrock Edition.
+
 ## Building
 1. Download the following:
     - [.NET SDK](https://dotnet.microsoft.com/en-us/download)
