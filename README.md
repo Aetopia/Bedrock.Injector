@@ -57,27 +57,13 @@ The thing is that it can be greatly improved & made much more reliable:
 
         - Once it is deleted, the game has reached the title screen & is fully initialized.
 
-Here is the implementation:
+## Building
+1. Download the following:
+    - [.NET SDK](https://dotnet.microsoft.com/en-us/download)
+    - [.NET Framework 4.8.1 Developer Pack](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net481-developer-pack-offline-installer)
 
-```csharp
-static class Game
-{
-    readonly static App App = new("Microsoft.MinecraftUWP_8wekyb3d8bbwe!App");
+2. Run the following command to compile:
 
-    const string Path = @"games\com.mojang\minecraftpe\resource_init_lock";
-
-    internal static Process Launch()
-    {
-        var path = ApplicationDataManager.CreateForPackageFamily(App.PackageFamilyName).LocalFolder.Path;
-        using ManualResetEventSlim @event = new(App.Running && !File.Exists(System.IO.Path.Combine(path, Path)));
-
-        using FileSystemWatcher watcher = new(path) { NotifyFilter = NotifyFilters.FileName, IncludeSubdirectories = true, EnableRaisingEvents = true };
-        watcher.Deleted += (_, e) => { if (e.Name.Equals(Path, StringComparison.OrdinalIgnoreCase)) @event.Set(); };
-
-        var process = Process.GetProcessById(App.Launch());
-        process.EnableRaisingEvents = true;
-        process.Exited += (_, _) => throw new OperationCanceledException();
-        @event.Wait(); return process;
-    }
-}
-```
+    ```cmd
+    dotnet publish "src\Bedrock.Injector.csproj"
+    ```
