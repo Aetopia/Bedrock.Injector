@@ -29,6 +29,12 @@ The thing is that it can be greatly improved & made much more reliable:
 
 - The second thing to tackle is somehow detect that the game is fully initialized to a desired extent:
 
+    - Keeping track of a process' module count isn't a reliable way to determine the initialization state because:
+
+        - A process' module count is an arbitrary metric to begin with & isn't consistent.
+
+        - The module count doesn't represent the process' initialzation state logically. 
+
     - When the game starts, it creates the following file `resource_init_lock`:
 
         ```
