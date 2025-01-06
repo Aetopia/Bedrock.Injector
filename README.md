@@ -1,5 +1,5 @@
 # Bedrock Injector
-An experimental dynamic link library injector for Minecraft: Bedrock Edition.
+An experimental next-gen dynamic link library injector for Minecraft: Bedrock Edition.
 
 ## Why?
 Injecting dynamic link libraries into Minecraft: Bedrock Edition is a complete mess.<br>
