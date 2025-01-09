@@ -119,8 +119,9 @@ sealed partial class Form : System.Windows.Forms.Form
             Environment.Exit(default);
         };
 
-        Load += async (_, _) =>
+        Shown += async (_, _) =>
         {
+            _.Enabled = false;
             try
             {
                 using StreamReader reader = File.OpenText("Bedrock.Injector.txt");
@@ -130,6 +131,7 @@ sealed partial class Form : System.Windows.Forms.Form
                         listBox.Items.Add(item);
             }
             catch (IOException) { }
+            _.Enabled = true;
         };
     }
 }
