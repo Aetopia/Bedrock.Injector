@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Threading;
 using static Unmanaged;
+using System.ComponentModel;
+using System.Security.Principal;
+using System.Collections.Generic;
+using System.Security.AccessControl;
+using System.Runtime.InteropServices;
 
 static class Injector
 {

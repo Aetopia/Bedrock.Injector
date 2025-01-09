@@ -1,8 +1,8 @@
 using System.Linq;
-using System.Threading;
-using Windows.ApplicationModel;
-using Windows.Foundation;
 using Windows.System;
+using System.Threading;
+using Windows.Foundation;
+using Windows.ApplicationModel;
 
 sealed class App(string value)
 {

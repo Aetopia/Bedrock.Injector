@@ -1,8 +1,11 @@
+using System;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.Marshalling;
 
-[ComImport, Guid("F27C3930-8029-4AD1-94E3-3DBA417810C1"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-interface IPackageDebugSettings
+[Guid("F27C3930-8029-4AD1-94E3-3DBA417810C1")]
+[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+[GeneratedComInterface(StringMarshalling = StringMarshalling.Utf16)]
+partial interface IPackageDebugSettings
 {
     [PreserveSig]
     int EnableDebugging(string packageFullName, string debuggerCommandLine, string environment);
@@ -34,6 +37,7 @@ interface IPackageDebugSettings
     [PreserveSig]
     int StopServicing(string packageFullName);
 
+    [PreserveSig]
     int StartSessionRedirection(string packageFullName, ulong sessionId);
 
     [PreserveSig]
@@ -49,51 +53,40 @@ interface IPackageDebugSettings
     int UnregisterForPackageStateChanges(uint dwCookie);
 }
 
-[ComImport, Guid("B1AEC16F-2383-4852-B0E9-8F0B1DC66B4D")]
-sealed class PackageDebugSettings : IPackageDebugSettings
+[GeneratedComClass]
+sealed partial class PackageDebugSettings : IPackageDebugSettings
 {
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int EnableDebugging(string packageFullName, string debuggerCommandLine, string environment);
+    static readonly Type Type = Type.GetTypeFromCLSID(new("B1AEC16F-2383-4852-B0E9-8F0B1DC66B4D"));
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int DisableDebugging(string packageFullName);
+    readonly IPackageDebugSettings _ = (IPackageDebugSettings)Activator.CreateInstance(Type);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int Suspend(string packageFullName);
+    public int ActivateBackgroundTask(nint taskId) => _.ActivateBackgroundTask(taskId);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int Resume(string packageFullName);
+    public int DisableDebugging(string packageFullName) => _.DisableDebugging(packageFullName);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int TerminateAllProcesses(string packageFullName);
+    public int EnableDebugging(string packageFullName, string debuggerCommandLine, string environment) => _.EnableDebugging(packageFullName, debuggerCommandLine, environment);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int SetTargetSessionId(ulong sessionId);
+    public int EnumerateBackgroundTasks(string packageFullName, nint taskCount, nint taskIds, nint taskNames) => _.EnumerateBackgroundTasks(packageFullName, taskCount, taskIds, taskNames);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int EnumerateBackgroundTasks(string packageFullName, nint taskCount, nint taskIds, nint taskNames);
+    public int GetPackageExecutionState(string packageFullName, nint packageExecutionState) => _.GetPackageExecutionState(packageFullName, packageExecutionState);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int ActivateBackgroundTask(nint taskId);
+    public int RegisterForPackageStateChanges(string packageFullName, nint pPackageExecutionStateChangeNotification, nint pdwCookie) => _.RegisterForPackageStateChanges(packageFullName, pPackageExecutionStateChangeNotification, pdwCookie);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int StartServicing(string packageFullName);
+    public int Resume(string packageFullName) => _.Resume(packageFullName);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int StopServicing(string packageFullName);
+    public int SetTargetSessionId(ulong sessionId) => _.SetTargetSessionId(sessionId);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int StartSessionRedirection(string packageFullName, ulong sessionId);
+    public int StartServicing(string packageFullName) => _.StartServicing(packageFullName);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int StopSessionRedirection(string packageFullName);
+    public int StartSessionRedirection(string packageFullName, ulong sessionId) => _.StartSessionRedirection(packageFullName, sessionId);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int GetPackageExecutionState(string packageFullName, nint packageExecutionState);
+    public int StopServicing(string packageFullName) => _.StartServicing(packageFullName);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int RegisterForPackageStateChanges(string packageFullName, nint pPackageExecutionStateChangeNotification, nint pdwCookie);
+    public int StopSessionRedirection(string packageFullName) => _.StopSessionRedirection(packageFullName);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int UnregisterForPackageStateChanges(uint dwCookie);
+    public int Suspend(string packageFullName) => _.Suspend(packageFullName);
+
+    public int TerminateAllProcesses(string packageFullName) => _.TerminateAllProcesses(packageFullName);
+
+    public int UnregisterForPackageStateChanges(uint dwCookie) => _.UnregisterForPackageStateChanges(dwCookie);
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Specialized;
-using System.Configuration;
 using System.IO;
+using System.Globalization;
 using System.Windows.Forms;
 
 static class Program
@@ -9,12 +8,13 @@ static class Program
     [STAThread]
     static void Main()
     {
-        Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
-        ((NameValueCollection)ConfigurationManager.GetSection("System.Windows.Forms.ApplicationConfigurationSection"))["DpiAwareness"] = "PerMonitorV2";
-
+        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+        Directory.SetCurrentDirectory(Path.GetDirectoryName(Environment.ProcessPath));
         Application.EnableVisualStyles();
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
         Application.SetCompatibleTextRenderingDefault(false);
+        Application.SetColorMode(SystemColorMode.Dark);
+        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         Application.Run(new Form());
     }
 }

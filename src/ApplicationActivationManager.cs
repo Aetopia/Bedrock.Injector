@@ -1,8 +1,11 @@
+using System;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.Marshalling;
 
-[ComImport, Guid("2E941141-7F97-4756-BA1D-9DECDE894A3D"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-interface IApplicationActivationManager
+[Guid("2E941141-7F97-4756-BA1D-9DECDE894A3D")]
+[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+[GeneratedComInterface(StringMarshalling = StringMarshalling.Utf16)]
+partial interface IApplicationActivationManager
 {
     [PreserveSig]
     int ActivateApplication(string appUserModelId, string arguments, int options, out int processId);
@@ -14,15 +17,16 @@ interface IApplicationActivationManager
     int ActivateForProtocol(string appUserModelId, nint itemArray, out int processId);
 }
 
-[ComImport, Guid("45BA127D-10A8-46EA-8AB7-56EA9078943C")]
-sealed class ApplicationActivationManager : IApplicationActivationManager
+[GeneratedComClass]
+sealed partial class ApplicationActivationManager : IApplicationActivationManager
 {
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int ActivateApplication(string appUserModelId, string arguments, int options, out int processId);
+    static readonly Type Type = Type.GetTypeFromCLSID(new("45BA127D-10A8-46EA-8AB7-56EA9078943C"));
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int ActivateForFile(string appUserModelId, nint itemArray, string verb, out int processId);
+    readonly IApplicationActivationManager _ = (IApplicationActivationManager)Activator.CreateInstance(Type);
 
-    [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-    public extern int ActivateForProtocol(string appUserModelId, nint itemArray, out int processId);
+    public int ActivateApplication(string appUserModelId, string arguments, int options, out int processId) => _.ActivateApplication(appUserModelId, arguments, options, out processId);
+
+    public int ActivateForFile(string appUserModelId, nint itemArray, string verb, out int processId) => _.ActivateForFile(appUserModelId, itemArray, verb, out processId);
+
+    public int ActivateForProtocol(string appUserModelId, nint itemArray, out int processId) => _.ActivateForProtocol(appUserModelId, itemArray, out processId);
 }
