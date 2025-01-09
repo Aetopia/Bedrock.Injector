@@ -10,11 +10,11 @@ static class Program
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
         Directory.SetCurrentDirectory(Path.GetDirectoryName(Environment.ProcessPath));
+        
         Application.EnableVisualStyles();
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
         Application.SetCompatibleTextRenderingDefault(false);
         Application.SetColorMode(SystemColorMode.Dark);
-        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         Application.Run(new Form());
     }
 }
