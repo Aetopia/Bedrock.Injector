@@ -2,8 +2,6 @@ using System.Runtime.InteropServices;
 
 [assembly: DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 
-namespace Bedrock.Injector;
-
 static class Unmanaged
 {
     internal const int LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
@@ -47,4 +45,7 @@ static class Unmanaged
 
     [DllImport("Kernel32", SetLastError = true)]
     internal static extern bool VirtualFreeEx(nint hProcess, nint lpAddress, int dwSize, int dwFreeType);
+
+    [DllImport("Shell32", CharSet = CharSet.Auto, SetLastError = true), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    internal static extern int ShellMessageBox(nint hAppInst = default, nint hWnd = default, string lpcText = default, string lpcTitle = "Bedrock Injector", int fuStyle = 0x00000010);
 }
