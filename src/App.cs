@@ -1,5 +1,3 @@
-namespace Minecraft.Bedrock;
-
 using System.Linq;
 using System.Threading;
 using Windows.ApplicationModel;

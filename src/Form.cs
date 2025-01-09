@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -29,68 +30,96 @@ sealed class Form : System.Windows.Forms.Form
         {
             Dock = DockStyle.Fill,
             AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Margin = default
         };
         Controls.Add(_);
 
-        ListView listView = new()
+        CheckedListBox listBox = new()
         {
             Dock = DockStyle.Fill,
-            View = View.Details,
-            HeaderStyle = ColumnHeaderStyle.None,
-            CheckBoxes = true
+            BorderStyle = BorderStyle.FixedSingle,
+            Margin = default
         };
-        listView.Columns.Add(new ColumnHeader() { Width = -2 });
 
         TableLayoutPanel tableLayoutPanel = new()
         {
             Dock = DockStyle.Fill,
             AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Margin = default
         };
 
-        Button button1 = new() { Text = "Add", Dock = DockStyle.Fill };
+        Button button1 = new() { Text = "📂", Dock = DockStyle.Fill, Margin = default };
+        Button button2 = new() { Text = "🗑️", Dock = DockStyle.Fill, Margin = default };
+        Button button3 = new() { Text = "🔺", Dock = DockStyle.Fill, Margin = default };
+        Button button4 = new() { Text = "🔻", Dock = DockStyle.Fill, Margin = default };
+        Button button5 = new() { Text = "▶️", Dock = DockStyle.Fill, Margin = default };
 
-        Button button2 = new() { Text = "Remove", Dock = DockStyle.Fill };
+        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 25 });
+        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 25 });
+        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 25 });
+        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 25 });
 
-        Button button3 = new() { Text = "Launch", Dock = DockStyle.Fill };
-
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 50 });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 50 });
         tableLayoutPanel.Controls.Add(button1, 0, 0);
         tableLayoutPanel.Controls.Add(button2, 1, 0);
+        tableLayoutPanel.Controls.Add(button3, 2, 0);
+        tableLayoutPanel.Controls.Add(button4, 3, 0);
 
         _.RowStyles.Add(new() { SizeType = SizeType.Percent, Height = 100 });
         _.RowStyles.Add(new() { SizeType = SizeType.AutoSize });
         _.RowStyles.Add(new() { SizeType = SizeType.AutoSize });
-        _.Controls.AddRange([listView, tableLayoutPanel, button3]);
+        _.Controls.AddRange([listBox, tableLayoutPanel, button5]);
 
         button1.Click += (_, _) =>
         {
             if (Dialog.ShowDialog() is DialogResult.OK)
                 foreach (var item in Dialog.FileNames)
-                    if (!listView.Items.ContainsKey(item))
-                        listView.Items.Add(new ListViewItem() { Text = item, Name = item });
+                    if (!listBox.Items.Contains(item))
+                        listBox.Items.Add(item);
         };
 
         button2.Click += (_, _) =>
         {
-            foreach (ListViewItem item in listView.CheckedItems)
-                listView.Items.RemoveByKey(item.Name);
+            for (var index = listBox.CheckedItems.Count - 1; index >= 0; index--)
+                listBox.Items.Remove(listBox.CheckedItems[index]);
         };
 
-        button3.Click += async (_, _) =>
+        button3.Click += (_, _) =>
         {
-            button1.Enabled = button2.Enabled = button3.Enabled = false;
-            await Task.Run(() => Injector.Launch(listView.Items.Cast<ListViewItem>().Select(_ => _.Name)));
-            button1.Enabled = button2.Enabled = button3.Enabled = true;
+            if (listBox.SelectedIndex > 0)
+            {
+                var item = listBox.SelectedItem;
+                var index = listBox.SelectedIndex;
+                listBox.Items.RemoveAt(index--);
+                listBox.Items.Insert(index, item);
+                listBox.SelectedIndex = index;
+            }
+        };
+
+        button4.Click += (_, _) =>
+        {
+            if (listBox.SelectedIndex < listBox.Items.Count - 1)
+            {
+                var item = listBox.SelectedItem;
+                var index = listBox.SelectedIndex;
+                listBox.Items.RemoveAt(index++);
+                listBox.Items.Insert(index, item);
+                listBox.SelectedIndex = index;
+            }
+        };
+
+        button5.Click += async (_, _) =>
+        {
+            _.Enabled = false;
+            await Task.Run(() => Injector.Launch(listBox.Items.Cast<string>()));
+            _.Enabled = true;
         };
 
         Closed += async (_, _) =>
         {
             using StreamWriter writer = new(new FileStream("Paths.txt", FileMode.Create));
-            foreach (ListViewItem item in listView.Items) await writer.WriteLineAsync(item.Name);
-
+            foreach (string item in listBox.Items) await writer.WriteLineAsync(item);
         };
 
         Load += async (_, _) =>
@@ -100,8 +129,8 @@ sealed class Form : System.Windows.Forms.Form
                 using StreamReader reader = File.OpenText("Paths.txt");
                 string item = default;
                 while ((item = await reader.ReadLineAsync()) is not null)
-                    if (!listView.Items.ContainsKey(item = item.Trim()) && !string.IsNullOrEmpty(item))
-                        listView.Items.Add(new ListViewItem() { Text = item, Name = item });
+                    if (!listBox.Items.Contains(item = item.Trim()) && !string.IsNullOrEmpty(item))
+                        listBox.Items.Add(item);
             }
             catch (IOException) { }
         };

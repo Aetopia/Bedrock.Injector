@@ -1,5 +1,3 @@
-namespace Minecraft.Bedrock;
-
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -12,7 +10,7 @@ static class Game
 
     const string Path = @"games\com.mojang\minecraftpe\resource_init_lock";
 
-    internal static Process Launch()
+    internal static int Launch()
     {
         var path = ApplicationDataManager.CreateForPackageFamily(App.PackageFamilyName).LocalFolder.Path;
         using ManualResetEventSlim @event = new(App.Running && !File.Exists(System.IO.Path.Combine(path, Path)));
@@ -20,9 +18,9 @@ static class Game
         using FileSystemWatcher watcher = new(path) { NotifyFilter = NotifyFilters.FileName, IncludeSubdirectories = true, EnableRaisingEvents = true };
         watcher.Deleted += (_, e) => { if (e.Name.Equals(Path, StringComparison.OrdinalIgnoreCase)) @event.Set(); };
 
-        var process = Process.GetProcessById(App.Launch());
+        using var process = Process.GetProcessById(App.Launch());
         process.EnableRaisingEvents = true;
         process.Exited += (_, _) => throw new OperationCanceledException();
-        @event.Wait(); return process;
+        @event.Wait(); return process.Id;
     }
 }

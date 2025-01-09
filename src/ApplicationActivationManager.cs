@@ -1,5 +1,3 @@
-namespace Minecraft.Bedrock;
-
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
