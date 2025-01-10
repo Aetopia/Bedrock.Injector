@@ -1,87 +1,90 @@
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Drawing;
 using System.Reflection;
-using System.Windows.Forms;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Minecraft.Extensions;
 
-sealed partial class Form : System.Windows.Forms.Form
+sealed class Form : System.Windows.Forms.Form
 {
-    readonly OpenFileDialog Dialog = new()
-    {
-        CheckFileExists = true,
-        CheckPathExists = true,
-        Multiselect = true,
-        DereferenceLinks = true,
-        Filter = "Dynamic-Link Libraries (*.dll)|*.dll"
-    };
-
     internal Form()
     {
         using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(".ico")) Icon = new(stream);
         Text = "Bedrock Injector";
         Font = SystemFonts.MessageBoxFont;
         StartPosition = FormStartPosition.CenterScreen;
-        FormBorderStyle = FormBorderStyle.FixedDialog;
+        FormBorderStyle = FormBorderStyle.FixedSingle;
         ClientSize = new(400, 300);
-        MaximizeBox = MinimizeBox = false;
-
-        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+        MaximizeBox = MinimizeBox = false
+        ;
+        OpenFileDialog dialog = new()
         {
-            var exception = (Exception)e.ExceptionObject;
-            while (exception.InnerException is not null) exception = exception.InnerException;
-            _ = Unmanaged.ShellMessageBox(hWnd: Handle, lpcText: exception.Message);
-            Close();
+            CheckFileExists = true,
+            CheckPathExists = true,
+            Multiselect = true,
+            DereferenceLinks = true,
+            Filter = "Dynamic-Link Libraries (*.dll)|*.dll"
         };
 
-        TableLayoutPanel _ = new() { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = default };
-        TableLayoutPanel tableLayoutPanel = new() { Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = default };
-        CheckedListBox listBox = new() { Dock = DockStyle.Fill, BorderStyle = BorderStyle.None, Margin = default };
-        Button button1 = new() { Text = "📂", AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = default };
-        Button button2 = new() { Text = "🗑️", AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = default };
-        Button button3 = new() { Text = "✔️", AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = default };
-        Button button4 = new() { Text = "🔺", AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = default };
-        Button button5 = new() { Text = "🔻", AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Margin = default };
-        Button button6 = new() { Text = "▶", Dock = DockStyle.Fill, Margin = default };
-        Button button7 = new() { Text = "⬛", Dock = DockStyle.Fill, Margin = default };
-
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.AutoSize });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.AutoSize });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.AutoSize });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.AutoSize });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.AutoSize });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 100 });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 100 });
-
-        tableLayoutPanel.Controls.Add(button1, 0, default);
-        tableLayoutPanel.Controls.Add(button2, 1, default);
-        tableLayoutPanel.Controls.Add(button3, 2, default);
-        tableLayoutPanel.Controls.Add(button4, 3, default);
-        tableLayoutPanel.Controls.Add(button5, 4, default);
-        tableLayoutPanel.Controls.Add(button6, 5, default);
-        tableLayoutPanel.Controls.Add(button7, 6, default);
-
-        _.RowStyles.Add(new() { SizeType = SizeType.Percent, Height = 100 });
-        _.RowStyles.Add(new() { SizeType = SizeType.AutoSize });
-        _.Controls.AddRange([listBox, tableLayoutPanel]);
+        TableLayoutPanel _ = new()
+        {
+            Dock = DockStyle.Fill,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Margin = default
+        };
         Controls.Add(_);
 
-        button1.Click += (_, _) =>
+        MenuStrip toolStrip = new() { Dock = DockStyle.Fill, AutoSize = true, GripStyle = ToolStripGripStyle.Hidden };
+        _.RowStyles.Add(new() { SizeType = SizeType.AutoSize });
+        _.Controls.Add(toolStrip);
+
+        ToolStripButton toolStripButton1 = new() { Text = "📂", AutoSize = true, AutoToolTip = false, Margin = default };
+        ToolStripButton toolStripButton2 = new() { Text = "🗑️", AutoSize = true, AutoToolTip = false, Margin = default };
+        ToolStripButton toolStripButton3 = new() { Text = "✔️", AutoSize = true, AutoToolTip = false, Margin = default };
+        ToolStripButton toolStripButton4 = new() { Text = "🔺", AutoSize = true, AutoToolTip = false, Margin = default };
+        ToolStripButton toolStripButton5 = new() { Text = "🔻", AutoSize = true, AutoToolTip = false, Margin = default };
+        toolStrip.Items.AddRange([toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripButton5]);
+
+        CheckedListBox listBox = new() { Dock = DockStyle.Fill, BorderStyle = BorderStyle.None, AutoSize = true, Margin = default };
+        _.RowStyles.Add(new() { SizeType = SizeType.Percent, Height = 100 });
+        _.Controls.Add(listBox);
+
+        TableLayoutPanel tableLayoutPanel = new()
         {
-            if (Dialog.ShowDialog() is DialogResult.OK)
-                foreach (var item in Dialog.FileNames)
+            Dock = DockStyle.Fill,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Margin = default
+        };
+
+        Button button1 = new() { Text = "▶", Dock = DockStyle.Fill, Margin = default };
+        Button button2 = new() { Text = "⬛", Dock = DockStyle.Fill, Margin = default };
+        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 50 });
+        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 50 });
+        tableLayoutPanel.Controls.Add(button1, 0, 0);
+        tableLayoutPanel.Controls.Add(button2, 1, 0);
+
+        _.RowStyles.Add(new() { SizeType = SizeType.AutoSize });
+        _.Controls.Add(tableLayoutPanel);
+
+        toolStripButton1.Click += (_, _) =>
+        {
+            if (dialog.ShowDialog() is DialogResult.OK)
+                foreach (var item in dialog.FileNames)
                     if (!listBox.Items.Contains(item))
                         listBox.Items.Add(item);
         };
 
-        button2.Click += (_, _) =>
+        toolStripButton2.Click += (_, _) =>
         {
             for (var index = listBox.CheckedItems.Count - 1; index >= 0; index--)
                 listBox.Items.Remove(listBox.CheckedItems[index]);
         };
 
-        button3.Click += (_, _) =>
+        toolStripButton3.Click += (_, _) =>
         {
             var value = listBox.CheckedItems.Count != listBox.Items.Count;
             for (int index = default; index < listBox.Items.Count; index++)
@@ -90,8 +93,10 @@ sealed partial class Form : System.Windows.Forms.Form
 
         void Reorder(bool _)
         {
-            var item = listBox.SelectedItem;
             var index = listBox.SelectedIndex;
+            if (index is -1) return;
+
+            var item = listBox.SelectedItem;
             var value = listBox.GetItemChecked(index);
 
             listBox.Items.RemoveAt(_ ? index++ : index--);
@@ -100,17 +105,34 @@ sealed partial class Form : System.Windows.Forms.Form
             listBox.SelectedIndex = index;
         }
 
-        button4.Click += (_, _) => { if (listBox.SelectedIndex > 0) Reorder(false); };
+        toolStripButton4.Click += (_, _) =>
+        {
+            if (listBox.SelectedIndex > 0)
+                Reorder(false);
+        };
 
-        button5.Click += (_, _) => { if (listBox.SelectedIndex < listBox.Items.Count - 1) Reorder(true); };
+        toolStripButton5.Click += (_, _) =>
+        {
+            if (listBox.SelectedIndex < listBox.Items.Count - 1)
+                Reorder(true);
+        };
 
-        async Task LaunchAsync() { _.Enabled = false; await Task.Run(() => Injector.Launch(listBox.Items.Cast<string>())); _.Enabled = true; }
+        async Task LaunchAsync()
+        {
+            _.Enabled = false;
+            await Loader.LaunchAsync(listBox.Items.Cast<string>());
+            _.Enabled = true;
+        }
 
-        button6.Click += async (_, _) => await LaunchAsync();
+        button1.Click += async (_, _) => await LaunchAsync();
 
-        button7.Click += async (_, _) => { await LaunchAsync(); Close(); };
+        button2.Click += async (_, _) =>
+        {
+            await LaunchAsync();
+            Close();
+        };
 
-        listBox.ItemCheck += (_, e) => BeginInvoke(() => button3.Text = listBox.CheckedItems.Count == listBox.Items.Count ? "❌" : "✔️");
+        listBox.ItemCheck += (_, e) => BeginInvoke(() => { toolStripButton3.Text = listBox.CheckedItems.Count == listBox.Items.Count ? "❌" : "✔️"; });
 
         Closed += async (_, _) =>
         {
@@ -132,6 +154,14 @@ sealed partial class Form : System.Windows.Forms.Form
             }
             catch (IOException) { }
             _.Enabled = true;
+        };
+
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+        {
+            var exception = (Exception)e.ExceptionObject;
+            while (exception.InnerException is not null) exception = exception.InnerException;
+            MessageBox.Show(this, exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Close();
         };
     }
 }

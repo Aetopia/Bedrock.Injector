@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Globalization;
+using System.IO;
 using System.Windows.Forms;
 
 static class Program
@@ -9,12 +9,11 @@ static class Program
     static void Main()
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
-        Directory.SetCurrentDirectory(Path.GetDirectoryName(Environment.ProcessPath));
+        Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         
         Application.EnableVisualStyles();
-        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.SetColorMode(SystemColorMode.Dark);
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
         Application.Run(new Form());
     }
 }

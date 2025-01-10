@@ -2,18 +2,13 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net481</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <NoWarn>WFO5001</NoWarn>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
     <Optimize>true</Optimize>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <PublishRelease>true</PublishRelease>
 
     <ApplicationIcon>Resources\.ico</ApplicationIcon>
-    <ApplicationManifest>Resources\.manifest</ApplicationManifest>
 
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Product>Bedrock Injector</Product>
@@ -22,21 +17,16 @@
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-
-    <_SuppressWinFormsTrimError>true</_SuppressWinFormsTrimError>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-    <PublishTrimmed>true</PublishTrimmed>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources/.ico">
       <LogicalName>.ico</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.19041.2" />
   </ItemGroup>
 
 </Project>
