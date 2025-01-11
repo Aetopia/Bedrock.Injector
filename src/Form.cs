@@ -56,7 +56,6 @@ sealed class Form : System.Windows.Forms.Form
             AutoSize = true,
             Margin = default,
             View = View.Details,
-
             CheckBoxes = true,
             HeaderStyle = ColumnHeaderStyle.None
         };
@@ -87,7 +86,8 @@ sealed class Form : System.Windows.Forms.Form
             if (dialog.ShowDialog() is DialogResult.OK)
                 foreach (var item in dialog.FileNames)
                     if (!listView.Items.ContainsKey(item))
-                        listView.Items.Add(new ListViewItem { Text = item, Name = item });
+                        listView.Items.Add(new ListViewItem { Text = Path.GetFileNameWithoutExtension(item), Name = item });
+            listView.Columns[default(int)].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         };
 
         toolStripButton2.Click += (_, _) =>
@@ -111,7 +111,7 @@ sealed class Form : System.Windows.Forms.Form
         }
 
         toolStripButton5.Click += (_, _) => { if (listView.SelectedIndices.Count is not default(int) && listView.SelectedIndices[default] > default(int)) Reorder(false); };
-        
+
         toolStripButton6.Click += (_, _) => { if (listView.SelectedIndices.Count is not default(int) && listView.SelectedIndices[default] < listView.Items.Count - 1) Reorder(true); };
 
         async Task LaunchAsync()
@@ -141,7 +141,8 @@ sealed class Form : System.Windows.Forms.Form
                 string item = default;
                 while ((item = await reader.ReadLineAsync()) is not null)
                     if (!string.IsNullOrEmpty(item) && !listView.Items.ContainsKey(item))
-                        listView.Items.Add(new ListViewItem { Text = item, Name = item });
+                        listView.Items.Add(new ListViewItem { Text = Path.GetFileNameWithoutExtension(item), Name = item });
+                listView.Columns[default(int)].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
             catch (IOException) { }
             _.Enabled = true;
