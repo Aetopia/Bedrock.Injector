@@ -111,6 +111,7 @@ sealed class Form : System.Windows.Forms.Form
         }
 
         toolStripButton5.Click += (_, _) => { if (listView.SelectedIndices.Count is not default(int) && listView.SelectedIndices[default] > default(int)) Reorder(false); };
+        
         toolStripButton6.Click += (_, _) => { if (listView.SelectedIndices.Count is not default(int) && listView.SelectedIndices[default] < listView.Items.Count - 1) Reorder(true); };
 
         async Task LaunchAsync()
