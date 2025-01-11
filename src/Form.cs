@@ -17,8 +17,8 @@ sealed class Form : System.Windows.Forms.Form
         StartPosition = FormStartPosition.CenterScreen;
         FormBorderStyle = FormBorderStyle.FixedSingle;
         ClientSize = new(400, 300);
-        MaximizeBox = MinimizeBox = false
-        ;
+        MaximizeBox = MinimizeBox = false;
+
         OpenFileDialog dialog = new()
         {
             CheckFileExists = true,
@@ -44,13 +44,25 @@ sealed class Form : System.Windows.Forms.Form
         ToolStripButton toolStripButton1 = new() { Text = "📂", AutoSize = true, AutoToolTip = false, Margin = default };
         ToolStripButton toolStripButton2 = new() { Text = "🗑️", AutoSize = true, AutoToolTip = false, Margin = default };
         ToolStripButton toolStripButton3 = new() { Text = "✔️", AutoSize = true, AutoToolTip = false, Margin = default };
-        ToolStripButton toolStripButton4 = new() { Text = "🔺", AutoSize = true, AutoToolTip = false, Margin = default };
-        ToolStripButton toolStripButton5 = new() { Text = "🔻", AutoSize = true, AutoToolTip = false, Margin = default };
-        toolStrip.Items.AddRange([toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripButton5]);
+        ToolStripButton toolStripButton4 = new() { Text = "❌", AutoSize = true, AutoToolTip = false, Margin = default };
+        ToolStripButton toolStripButton5 = new() { Text = "🔺", AutoSize = true, AutoToolTip = false, Margin = default };
+        ToolStripButton toolStripButton6 = new() { Text = "🔻", AutoSize = true, AutoToolTip = false, Margin = default };
+        toolStrip.Items.AddRange([toolStripButton1, toolStripButton2, toolStripButton3, toolStripButton4, toolStripButton5, toolStripButton6]);
 
-        CheckedListBox listBox = new() { Dock = DockStyle.Fill, BorderStyle = BorderStyle.None, AutoSize = true, Margin = default };
+        ListView listView = new()
+        {
+            Dock = DockStyle.Fill,
+            BorderStyle = BorderStyle.None,
+            AutoSize = true,
+            Margin = default,
+            View = View.Details,
+
+            CheckBoxes = true,
+            HeaderStyle = ColumnHeaderStyle.None
+        };
+        listView.Columns.Add(new ColumnHeader() { Width = -2 });
         _.RowStyles.Add(new() { SizeType = SizeType.Percent, Height = 100 });
-        _.Controls.Add(listBox);
+        _.Controls.Add(listView);
 
         TableLayoutPanel tableLayoutPanel = new()
         {
@@ -74,71 +86,48 @@ sealed class Form : System.Windows.Forms.Form
         {
             if (dialog.ShowDialog() is DialogResult.OK)
                 foreach (var item in dialog.FileNames)
-                    if (!listBox.Items.Contains(item))
-                        listBox.Items.Add(item);
+                    if (!listView.Items.ContainsKey(item))
+                        listView.Items.Add(new ListViewItem { Text = item, Name = item });
         };
 
         toolStripButton2.Click += (_, _) =>
         {
-            for (var index = listBox.CheckedItems.Count - 1; index >= 0; index--)
-                listBox.Items.Remove(listBox.CheckedItems[index]);
-            toolStripButton3.Text = "✔️";
+            foreach (ListViewItem item in listView.CheckedItems)
+                listView.Items.Remove(item);
         };
 
-        toolStripButton3.Click += (_, _) =>
-        {
-            var value = listBox.CheckedItems.Count != listBox.Items.Count;
-            for (int index = default; index < listBox.Items.Count; index++)
-                listBox.SetItemChecked(index, value);
-        };
+        void Select(bool _) { foreach (ListViewItem item in listView.Items) item.Checked = _; }
+
+        toolStripButton3.Click += (_, _) => Select(true);
+
+        toolStripButton4.Click += (_, _) => Select(false);
 
         void Reorder(bool _)
         {
-            var index = listBox.SelectedIndex;
-            if (index is -1) return;
-
-            var item = listBox.SelectedItem;
-            var value = listBox.GetItemChecked(index);
-
-            listBox.Items.RemoveAt(_ ? index++ : index--);
-            listBox.Items.Insert(index, item);
-            listBox.SetItemChecked(index, value);
-            listBox.SelectedIndex = index;
+            var index = listView.SelectedIndices[default];
+            var item = listView.SelectedItems[default(int)];
+            listView.Items.RemoveAt(_ ? index++ : index--);
+            listView.Items.Insert(index, item);
         }
 
-        toolStripButton4.Click += (_, _) =>
-        {
-            if (listBox.SelectedIndex > 0)
-                Reorder(false);
-        };
-
-        toolStripButton5.Click += (_, _) =>
-        {
-            if (listBox.SelectedIndex < listBox.Items.Count - 1)
-                Reorder(true);
-        };
+        toolStripButton5.Click += (_, _) => { if (listView.SelectedIndices.Count is not default(int) && listView.SelectedIndices[default] > default(int)) Reorder(false); };
+        toolStripButton6.Click += (_, _) => { if (listView.SelectedIndices.Count is not default(int) && listView.SelectedIndices[default] < listView.Items.Count - 1) Reorder(true); };
 
         async Task LaunchAsync()
         {
             _.Enabled = false;
-            await Loader.LaunchAsync(listBox.Items.Cast<string>());
+            await Loader.LaunchAsync(listView.Items.Cast<ListViewItem>().Select(_ => _.Name));
             _.Enabled = true;
         }
 
         button1.Click += async (_, _) => await LaunchAsync();
 
-        button2.Click += async (_, _) =>
-        {
-            await LaunchAsync();
-            Close();
-        };
+        button2.Click += async (_, _) => { await LaunchAsync(); Close(); };
 
-        listBox.ItemCheck += (_, e) => BeginInvoke(() => { toolStripButton3.Text = listBox.CheckedItems.Count == listBox.Items.Count ? "❌" : "✔️"; });
-
-        Closed += async (_, _) =>
+        Closed += (_, _) =>
         {
             using (StreamWriter writer = new(new FileStream("Bedrock.Injector.txt", FileMode.Create)))
-                foreach (string item in listBox.Items) await writer.WriteLineAsync(item);
+                foreach (string item in listView.Items.Cast<ListViewItem>().Select(_ => _.Name)) writer.WriteLine(item);
             Environment.Exit(default);
         };
 
@@ -150,19 +139,19 @@ sealed class Form : System.Windows.Forms.Form
                 using StreamReader reader = File.OpenText("Bedrock.Injector.txt");
                 string item = default;
                 while ((item = await reader.ReadLineAsync()) is not null)
-                    if (!listBox.Items.Contains(item = item.Trim()) && !string.IsNullOrEmpty(item))
-                        listBox.Items.Add(item);
+                    if (!string.IsNullOrEmpty(item) && !listView.Items.ContainsKey(item))
+                        listView.Items.Add(new ListViewItem { Text = item, Name = item });
             }
             catch (IOException) { }
             _.Enabled = true;
         };
 
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
-        {
-            var exception = (Exception)e.ExceptionObject;
-            while (exception.InnerException is not null) exception = exception.InnerException;
-            MessageBox.Show(this, exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Close();
-        };
+           {
+               var exception = (Exception)e.ExceptionObject;
+               while (exception.InnerException is not null) exception = exception.InnerException;
+               MessageBox.Show(this, exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+               Close();
+           };
     }
 }
