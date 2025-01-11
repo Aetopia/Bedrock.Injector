@@ -33,10 +33,9 @@ public static class Loader
 
     static string Get(string path)
     {
-        FileInfo info = new(path); var security = info.GetAccessControl();
-        security.AddAccessRule(new(Identifier, FileSystemRights.ReadAndExecute, AccessControlType.Allow));
-        info.SetAccessControl(security);
-        return info.FullName;
+        FileInfo info = new(path); if (!info.Exists) throw new FileNotFoundException();
+        var security = info.GetAccessControl(); security.AddAccessRule(new(Identifier, FileSystemRights.ReadAndExecute, AccessControlType.Allow));
+        info.SetAccessControl(security); return info.FullName;
     }
 
     static void Launch(nint hProcess, string path)
@@ -50,10 +49,10 @@ public static class Loader
                 Throw();
 
             if (!WriteProcessMemory(hProcess, lpBaseAddress, lpBuffer = Marshal.StringToHGlobalUni(path), dwSize, default))
-              Throw();
+                Throw();
 
             if ((hThread = CreateRemoteThread(hProcess, default, default, lpStartAddress, lpBaseAddress, default, default)) == default)
-               Throw();
+                Throw();
 
             WaitForSingleObject(hThread, Timeout.Infinite);
         }
@@ -61,7 +60,7 @@ public static class Loader
         {
             Marshal.FreeHGlobal(lpBuffer);
             VirtualFreeEx(hProcess, lpBaseAddress, default, MEM_RELEASE);
-            CloseHandle( hThread);
+            CloseHandle(hThread);
         }
     }
 
