@@ -82,7 +82,7 @@ sealed class Form : System.Windows.Forms.Form
         {
             for (var index = listBox.CheckedItems.Count - 1; index >= 0; index--)
                 listBox.Items.Remove(listBox.CheckedItems[index]);
-          //  toolStripButton3.Text = "✔️";
+            toolStripButton3.Text = "✔️";
         };
 
         toolStripButton3.Click += (_, _) =>
