@@ -7,9 +7,8 @@
     <Optimize>true</Optimize>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <PublishRelease>true</PublishRelease>
-
+    <NoWarn>IDE0130</NoWarn>
     <ApplicationIcon>Resources\.ico</ApplicationIcon>
-
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Product>Bedrock Injector</Product>
     <AssemblyTitle>Bedrock Injector</AssemblyTitle>
