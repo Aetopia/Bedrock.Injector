@@ -149,11 +149,11 @@ sealed class Form : System.Windows.Forms.Form
         };
 
         AppDomain.CurrentDomain.UnhandledException += (_, e) =>
-           {
-               var exception = (Exception)e.ExceptionObject;
-               while (exception.InnerException is not null) exception = exception.InnerException;
-               MessageBox.Show(this, exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-               Close();
-           };
+        {
+            var exception = (Exception)e.ExceptionObject;
+            while (exception.InnerException is not null) exception = exception.InnerException;
+            MessageBox.Show(this, exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Close();
+        };
     }
 }
