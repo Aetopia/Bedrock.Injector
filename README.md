@@ -39,7 +39,7 @@ An experimental next-gen dynamic link library injector for Minecraft: Bedrock Ed
 
 - <kbd>▶</kbd> Launches & injects dynamic link libraries.
 
-- <kbd>⬛</kbd> Launches, inject dynamic link libraries & closes.
+- <kbd>⬛</kbd> Launches, injects dynamic link libraries & closes.
 
 <hr>
 
