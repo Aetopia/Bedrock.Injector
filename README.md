@@ -5,7 +5,15 @@ An experimental next-gen dynamic link library injector for Minecraft: Bedrock Ed
 
 - Inject multiple dynamic link libraries at once.
 
-    - Inject your favorite clients, modifications & hacked clients in one go!
+    - Easily select what dynamic link libraries to be injected.
+
+    - Organize based on load order to ensure compatibility.
+
+-  Automatically detect if the game is fully initialized & then inject dynamic link libraries!
+
+    - Use reliable methods to detect if the game is fully initialized or not.
+
+    - Ensure dynamic link libraries are injected when the game is fully intiailized.
 
 ## Usage
 
