@@ -13,7 +13,7 @@ An experimental next-gen dynamic link library injector for Minecraft: Bedrock Ed
 
     - Use reliable methods to detect if the game is fully initialized or not.
 
-    - Ensure dynamic link libraries are injected when the game is fully intiailized.
+    - Ensure dynamic link libraries are injected when the game is fully initialized .
 
 ## Usage
 
@@ -25,7 +25,7 @@ An experimental next-gen dynamic link library injector for Minecraft: Bedrock Ed
 
 <hr>
 
-- <kbd>📂</kbd> Import dynamic link libraries to injected.
+- <kbd>📂</kbd> Import dynamic link libraries to be injected.
 
 - <kbd>🗑️</kbd> Remove selected dynamic link libraries.
 
