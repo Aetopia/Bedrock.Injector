@@ -63,23 +63,9 @@ sealed class Form : System.Windows.Forms.Form
         _.RowStyles.Add(new() { SizeType = SizeType.Percent, Height = 100 });
         _.Controls.Add(listView);
 
-        TableLayoutPanel tableLayoutPanel = new()
-        {
-            Dock = DockStyle.Fill,
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
-            Margin = default
-        };
-
-        Button button1 = new() { Text = "▶", Dock = DockStyle.Fill, Margin = default };
-        Button button2 = new() { Text = "⬛", Dock = DockStyle.Fill, Margin = default };
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 50 });
-        tableLayoutPanel.ColumnStyles.Add(new() { SizeType = SizeType.Percent, Width = 50 });
-        tableLayoutPanel.Controls.Add(button1, 0, 0);
-        tableLayoutPanel.Controls.Add(button2, 1, 0);
-
+        Button button = new() { Text = "▶", Dock = DockStyle.Fill, Margin = default };
         _.RowStyles.Add(new() { SizeType = SizeType.AutoSize });
-        _.Controls.Add(tableLayoutPanel);
+        _.Controls.Add(button);
 
         toolStripButton1.Click += (_, _) =>
         {
@@ -123,9 +109,7 @@ sealed class Form : System.Windows.Forms.Form
             _.Enabled = true;
         }
 
-        button1.Click += async (_, _) => await LaunchAsync();
-
-        button2.Click += async (_, _) => { await LaunchAsync(); Close(); };
+        button.Click += async (_, _) => await LaunchAsync();
 
         Closed += (_, _) =>
         {
