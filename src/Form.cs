@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Minecraft.Extensions;
+using Bedrockix.Minecraft;
 
 sealed class Form : System.Windows.Forms.Form
 {
@@ -116,8 +116,10 @@ sealed class Form : System.Windows.Forms.Form
 
         async Task LaunchAsync()
         {
+            if (!Game.Installed) return;
+            
             _.Enabled = false;
-            await Loader.LaunchAsync(listView.Items.Cast<ListViewItem>().Select(_ => _.Name));
+            await Task.Run(() => Loader.Launch(listView.Items.Cast<ListViewItem>().Select(_ => _.Name)));
             _.Enabled = true;
         }
 
