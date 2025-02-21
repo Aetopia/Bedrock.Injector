@@ -7,7 +7,6 @@
     <Optimize>true</Optimize>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <PublishRelease>true</PublishRelease>
-    <NoWarn>IDE0130</NoWarn>
     <ApplicationIcon>Resources\.ico</ApplicationIcon>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <Product>Bedrock Injector</Product>
@@ -26,7 +25,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bedrockix" Version="*" />
-    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.19041.2" />
+    <PackageReference Include="Costura.Fody" Version="*" PrivateAssets="All"/>
   </ItemGroup>
 
 </Project>
