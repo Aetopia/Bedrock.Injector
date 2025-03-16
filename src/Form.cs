@@ -100,16 +100,19 @@ sealed class Form : System.Windows.Forms.Form
 
         toolStripButton6.Click += (_, _) => { if (listView.SelectedIndices.Count is not default(int) && listView.SelectedIndices[default] < listView.Items.Count - 1) Reorder(true); };
 
-        async Task LaunchAsync()
+
+        button.Click += async (_, _) =>
         {
-            if (!Game.Installed) return;
+            if (Game.Installed)
+            {
+                MessageBox.Show(this, "Minecraft: Bedrock Edition isn't installed!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             
             _.Enabled = false;
             await Task.Run(() => Loader.Launch(listView.Items.Cast<ListViewItem>().Select(_ => _.Name)));
             _.Enabled = true;
-        }
-
-        button.Click += async (_, _) => await LaunchAsync();
+        };
 
         Closed += (_, _) =>
         {
