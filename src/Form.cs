@@ -103,7 +103,7 @@ sealed class Form : System.Windows.Forms.Form
 
         button.Click += async (_, _) =>
         {
-            if (Game.Installed)
+            if (!Game.Installed)
             {
                 MessageBox.Show(this, "Minecraft: Bedrock Edition isn't installed!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
